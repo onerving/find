@@ -43,9 +43,8 @@ void evalParams(int * numarg, char ** ptrarg)
         // Se mueve el apuntador al siguiente elemento de los args
         ptrarg++;
         // Si se encuentra una bandera
-        if( (*ptrarg)[0] == '-' )
+        if( ((*ptrarg)[0] == '-') && !scanexe )
         {
-            if(scanexe) scanexe = 0;
             // Se verifica si hay otro argumento después.
             if(++i<*numarg)
             {
