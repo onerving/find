@@ -26,7 +26,7 @@ void evalParams(int * numarg, char ** ptrarg)
 {
     if(*numarg == 1)
     {
-        printf("Uso: find [-ntdp] ruta\n");
+        printf("Uso: find [-ntdp] ruta [-exec comando [argumentos]]\n");
         printf("Donde: ");
         printf("-n: Nombre | ");
         printf("-t: Tipo | ");
@@ -35,7 +35,9 @@ void evalParams(int * numarg, char ** ptrarg)
         exit(1);
     }
 
-    int i;
+    int i, j=0;
+    int scanexe = 0;
+
     for(i = 1; i<*numarg ; i++)
     {
         // Se mueve el apuntador al siguiente elemento de los args
@@ -43,6 +45,7 @@ void evalParams(int * numarg, char ** ptrarg)
         // Si se encuentra una bandera
         if( (*ptrarg)[0] == '-' )
         {
+            if(scanexe) scanexe = 0;
             // Se verifica si hay otro argumento después.
             if(++i<*numarg)
             {
@@ -56,6 +59,11 @@ void evalParams(int * numarg, char ** ptrarg)
                     atributo[2] = *(++ptrarg);
                 else if(!strcmp(*ptrarg, "-p"))
                     atributo[3] = *(++ptrarg);
+                else if(!strcmp(*ptrarg, "-exec"))
+                {
+                    scanexe = 1;
+                    j = 0; i--;
+                }
                 else
                 {
                     printf("Bandera \"%s\" no reconocida.\n", *ptrarg);
@@ -69,19 +77,21 @@ void evalParams(int * numarg, char ** ptrarg)
                 exit(1);
             }
         }
-        //Si se encuentra algo que no sea ni bandera ni valor de ésta
+        // Si antes hubo una bandera exe
+        else if(scanexe)
+        {
+            exe[j++] = *ptrarg;
+        }
+        // Si no se habia encontrado otro path
+        else if( pathBusqueda == NULL )
+            pathBusqueda = *(ptrarg);
+        // No se puede tener mas de un argumento de busqueda
         else
         {
-            // Si no se habia encontrado otro path
-            if( pathBusqueda == NULL )
-                pathBusqueda = *(ptrarg);
-            // No se puede tener mas de un argumento de busqueda
-            else
-            {
-                printf("No se puede buscar en mas de un directorio\n");
-                exit(1);
-            }
+            printf("No se puede buscar en mas de un directorio\n");
+            exit(1);
         }
+
     }
     if( pathBusqueda == NULL)
     {
@@ -105,12 +115,20 @@ void pruebas()
             case 3: printf("Permisos:"); break;
         }
         printf(" %s\n", atributo[i]);
-        
+
     }
     printf("Ruta de la busqueda: %s\n", pathBusqueda);
+    printf("Exec:\n");
+    for(i = 0; i < 11; i++)
+    {
+        if(exe[i] == NULL) break;
+        printf("\t%s\n", exe[i]);
+    }
+
+
 }
 
 
-        
+
 
 

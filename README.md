@@ -36,7 +36,7 @@
 
 
 ## Funcion: Analizar parametros
-*Esta funcion es parte del punto 3 y 4, con un total de* **40 pts** 
+*Esta funcion es parte del punto 3 y 4, con un total de* **40 pts**
 
 Recibe `argc` y `argv[]`
 
@@ -61,7 +61,7 @@ No regresa nada
 
 ## Funcion: Buscar
 
-*Esta funcion es parte del punto 1, 2, 3 y 4 con un total de* **100 puntos** 
+*Esta funcion es parte del punto 1, 2, 3 y 4 con un total de* **100 puntos**
 
 Función que busca un archivo de acuerdo a una lista de atributos proporcionada por el usuario.
 
