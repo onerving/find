@@ -71,9 +71,9 @@ Utiliza la variable global `atributo[]`
 
 No regresa nada
 
-    encontrado = 1
     Abre la estructura del directorio proporcionado
     Por cada archivo en la estructura:
+        encontrado = 1
         Si es un directorio:
             Se lanza un nuevo hilo con la funcion Buscar
             Se pasa el nombre del directorio como parametro a Buscar
