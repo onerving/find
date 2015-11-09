@@ -20,8 +20,8 @@ char * exe[11];
 
 int main(int argc, char * argv[])
 {
-    pathBusqueda = strdup("/root/");
-    atributo[0] = strdup(".vimrc");
+    pathBusqueda = strdup("/root");
+    atributo[2] = strdup("root");
     buscadir(pathBusqueda);
     return 1;
 
@@ -32,7 +32,7 @@ void buscadir(char * path)
     DIR *directorio;
     int encontrado;
     char cwd[1024];
-    char *resultado;
+    char resultado[2048];
     struct passwd *pwd;
     struct dirent *ptrdir;
     struct stat archivo;
@@ -40,10 +40,10 @@ void buscadir(char * path)
 
     chdir(path);
     getcwd(cwd, sizeof(cwd));
-    printf("Directorio actual: %s\n", cwd);
+    //printf("Directorio actual (cwd): %s\n", cwd);
 
     // Se abre el directorio
-    if((directorio = opendir(pathBusqueda)) == NULL)
+    if((directorio = opendir(cwd)) == NULL)
         {
             printf("No se pudo abrir el directorio %s\n", pathBusqueda);
             exit(1);
@@ -54,7 +54,7 @@ void buscadir(char * path)
         encontrado = 1;
         // Se abre el archivo con stat
         stat(ptrdir->d_name, &archivo);
-        // Si es un directorio, se lanza una busqueda recursiva dentro de el.
+        //printf("Abierto archivo %s\n", ptrdir->d_name);
 
         // Se verifica que se cumplan los parametros especificados
 
@@ -86,16 +86,22 @@ void buscadir(char * path)
                 encontrado = 0;
         }
 
-        // Por ultimo se verifica si se encontro el archivo
-        if(encontrado)
-        {
-            resultado = strdup(cwd);
-            strcat(resultado, "/");
-            strcat(resultado, ptrdir->d_name);
+        // Se obtiene la ruta absoluta del archivo
+        strlcpy(resultado, cwd, sizeof(resultado));
+        strlcat(resultado, "/", sizeof(resultado));
+        strlcat(resultado, ptrdir->d_name, sizeof(resultado));
+
+        // Si se encuentra el archivo, se imprime en pantalla su ruta absoluta
+        if( encontrado && (strcmp(ptrdir->d_name, ".") != 0) && (strcmp(ptrdir->d_name, "..") != 0) )
             printf("%s\n", resultado);
-        }
+
+        // Si es un directorio, se lanza una busqueda recursiva dentro de el.
+        if( ((archivo.st_mode & S_IFMT)==S_IFDIR) && (strcmp(ptrdir->d_name, ".") != 0) && (strcmp(ptrdir->d_name, "..") != 0) )
+            buscadir(resultado);
 
     }
+    // Se cierra el directorio porque si no es pecado y el mundo explota
+    closedir(directorio);
 
 
 }
